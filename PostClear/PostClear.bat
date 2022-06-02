@@ -150,7 +150,11 @@ schtasks /delete /tn "Microsoft\Windows\Windows Defender\Windows Defender Schedu
 schtasks /delete /tn "Microsoft\Windows\Windows Defender\Windows Defender Verification" /f
 schtasks /delete /tn "Microsoft\Windows\Windows Error Reporting\QueueReporting" /f
 schtasks /delete /tn "Microsoft\Windows\WindowsUpdate\Scheduled Start" /f
-schtasks /create /tn "Microsoft\Windows\WindowsUpdate\Scheduled Start" /tr %windir%\explorer.exe /sc once /sd 30/11/1999 /st 00:00 /ru SYSTEM
+if exist %windir%\ru-RU\explorer.exe.mui (
+	schtasks /create /tn "Microsoft\Windows\WindowsUpdate\Scheduled Start" /tr %windir%\explorer.exe /sc once /sd 30/11/1999 /st 00:00 /ru SYSTEM
+) else (
+	schtasks /create /tn "Microsoft\Windows\WindowsUpdate\Scheduled Start" /tr %windir%\explorer.exe /sc once /sd 11/30/1999 /st 00:00 /ru SYSTEM
+)
 schtasks /change /tn "Microsoft\Windows\WindowsUpdate\Scheduled Start" /disable
 %windir%\System32\WindowsPowerShell\v1.0\Powershell.exe -executionpolicy remotesigned -Command "& Get-Acl -Path %windir%\System32\control.exe | Set-Acl -Path '%windir%\System32\Tasks\Microsoft\Windows\WindowsUpdate\Scheduled Start'"
 %programdata%\PostClear\AdvancedRun.exe /EXEFilename %windir%\System32\schtasks.exe /CommandLine '/delete /tn "Microsoft\Windows\UpdateOrchestrator\Report policies" /f' /RunAs 4 /WaitProcess 1 /Run
@@ -190,13 +194,31 @@ powercfg /change standby-timeout-dc 0
 title Copy Edge icons
 move %programdata%\PostClear\Assets %windir%\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\Assets
 title Shortcuts
-cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\+ Сбросить совместимость.lnk" "%programdata%\PostClear\Shortcuts\Compatibility.bat"
-cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\+ Сбросить микшер.lnk" "%programdata%\PostClear\Shortcuts\MixerReset.bat"
-cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\+ Сбросить папки.lnk" "%programdata%\PostClear\Shortcuts\ResetFolders.bat"
-cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\+ Перезапустить проводник.lnk" "%programdata%\PostClear\Shortcuts\RestartExplorer.bat"
-cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\+ Вкл. поддержку AppX.lnk" "%programdata%\PostClear\Shortcuts\AppxON.reg"
-cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\+ Выкл. поддержку AppX.lnk" "%programdata%\PostClear\Shortcuts\AppxOFF.reg"
-cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\Accessories\Калькулятор.lnk" "%windir%\System32\calc.exe"
+if exist %windir%\ru-RU\explorer.exe.mui (
+	set rescom=+ Сбросить совместимость
+	set resmix=+ Сбросить микшер
+	set resfol=+ Сбросить папки
+	set resexp=+ Перезапустить проводник
+	set appxon=+ Вкл. поддержку AppX
+	set appxoff=+ Выкл. поддержку AppX
+	set oldcalc=Калькулятор
+) else (
+	set rescom=+ Reset compatibility
+	set resmix=+ Reset mixer
+	set resfol=+ Reset folders
+	set resexp=+ Restart explorer
+	set appxon=+ Enable AppX support
+	set appxoff=+ Disable AppX support
+	set oldcalc=Calculator
+	reg add "HKEY_CURRENT_USER\SOFTWARE\IvoSoft\ClassicShell\Settings" /v Language /t REG_SZ /d "en-US"
+)
+cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\%rescom%.lnk" "%programdata%\PostClear\Shortcuts\Compatibility.bat"
+cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\%resmix%.lnk" "%programdata%\PostClear\Shortcuts\MixerReset.bat"
+cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\%resfol%.lnk" "%programdata%\PostClear\Shortcuts\ResetFolders.bat"
+cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\%resexp%.lnk" "%programdata%\PostClear\Shortcuts\RestartExplorer.bat"
+cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\%appxon%.lnk" "%programdata%\PostClear\Shortcuts\AppxON.reg"
+cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\%appxoff%.lnk" "%programdata%\PostClear\Shortcuts\AppxOFF.reg"
+cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\Accessories\%oldcalc%.lnk" "%windir%\System32\calc.exe"
 rd /s /q "%programdata%\Microsoft\Windows\Start Menu\Programs\Classic Shell"
 del /f /q "%userprofile%\Desktop\Microsoft Edge.lnk"
 title Applying PostClear.reg

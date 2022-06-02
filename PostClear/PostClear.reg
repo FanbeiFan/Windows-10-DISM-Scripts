@@ -21,9 +21,6 @@ Windows Registry Editor Version 5.00
 ; Очистка панели задач от закрепленных ярлыков
 [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Taskband]
 "Favorites"=-
-; Новости и интересы
-[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Feeds]
-"ShellFeedsTaskbarViewMode"=dword:00000002
 ; Параметры папок: Показывать скрытые \ Не скрывать расширения файлов
 [HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
 "Hidden"=dword:00000001

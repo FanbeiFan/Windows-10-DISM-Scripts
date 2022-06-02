@@ -1,15 +1,30 @@
-# Удаление всех редакций кроме Pro
-dism /delete-image /imagefile:Z:\install.wim /index:5
-dism /delete-image /imagefile:Z:\install.wim /index:4
-dism /delete-image /imagefile:Z:\install.wim /index:2
-dism /delete-image /imagefile:Z:\install.wim /index:1
-# Монтирование
+# Remove all revisions except Pro
+if ([System.IO.File]::Exists("Z:\EN.txt"))
+{
+	dism /delete-image /imagefile:Z:\install.wim /index:10
+	dism /delete-image /imagefile:Z:\install.wim /index:9
+	dism /delete-image /imagefile:Z:\install.wim /index:8
+	dism /delete-image /imagefile:Z:\install.wim /index:7
+	dism /delete-image /imagefile:Z:\install.wim /index:6
+	dism /delete-image /imagefile:Z:\install.wim /index:4
+	dism /delete-image /imagefile:Z:\install.wim /index:3
+	dism /delete-image /imagefile:Z:\install.wim /index:2
+	dism /delete-image /imagefile:Z:\install.wim /index:1
+}
+else
+{
+	dism /delete-image /imagefile:Z:\install.wim /index:5
+	dism /delete-image /imagefile:Z:\install.wim /index:4
+	dism /delete-image /imagefile:Z:\install.wim /index:2
+	dism /delete-image /imagefile:Z:\install.wim /index:1
+}
+# Mounting
 mkdir Z:\Install
 dism /mount-image /imagefile:Z:\install.wim /index:1 /mountdir:Z:\Install
-# Добавление файла ответов
+# Adding a response file
 mkdir Z:\Install\Windows\Panther
 move Z:\unattend.xml Z:\Install\Windows\Panther
-# Удаление компонентов
+# Removing components
 dism /image:Z:\Install /remove-capability /capabilityname:App.StepsRecorder~~~~0.0.1.0
 dism /image:Z:\Install /remove-capability /capabilityname:App.Support.QuickAssist~~~~0.0.1.0
 dism /image:Z:\Install /remove-capability /capabilityname:Hello.Face.18967~~~~0.0.1.0
@@ -23,11 +38,11 @@ foreach ($letter in $letters) {
 		$found=$letter+":\sources\sxs\"
 	}
 }
-# Установка .NET Framework 3.5
+# Installation .NET Framework 3.5
 dism /image:Z:\Install /enable-feature /featurename:NetFx3 /all /source:$found /limitaccess
-# Активация Direct Play
+# Activation Direct Play
 dism /image:Z:\Install /enable-feature /featurename:DirectPlay /all /source:$found /limitaccess
-# Удаление предустановочных пакетов
+# Removing Pre-Installation Packages
 $apps=@(
 "Microsoft.549981C3F5F10_1.1911.21713.0_neutral_~_8wekyb3d8bbwe",
 "Microsoft.BingWeather_4.25.20211.0_neutral_~_8wekyb3d8bbwe",

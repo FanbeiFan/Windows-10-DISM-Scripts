@@ -1,11 +1,15 @@
 mode con:cols=50 lines=1
 title Start work...
 
-call :Clear >> Z:\Clear.log 2>&1
+call :Clear>>Z:\Clear.log 2>&1
 EXIT /b 0
 
 :Clear
 title Applying Clear.ps1
+dism /get-imageinfo /imagefile:Z:\install.wim /index:10
+if %ERRORLEVEL% EQU -1051328239 (
+	del /f /q Z:\EN.txt
+)
 %windir%\System32\WindowsPowerShell\v1.0\Powershell.exe -executionpolicy remotesigned -File Z:\Clear.ps1
 title Applying Clear.reg
 reg load HKEY_LOCAL_MACHINE\WIM_SOFTWARE Z:\Install\Windows\System32\config\SOFTWARE
@@ -18,9 +22,15 @@ reg unload HKEY_LOCAL_MACHINE\WIM_CURRENT_USER
 reg unload HKEY_LOCAL_MACHINE\WIM_SYSTEM
 reg unload HKEY_LOCAL_MACHINE\WIM_SOFTWARE
 title Hide NTUSER.DAT
-ATTRIB Z:\Install\Users\Default\NTUSER.DAT +S +H +R
+ATTRIB Z:\Install\Users\Default\NTUSER.DAT +S +H
 title Shortcuts
-move "Z:\Install\ProgramData\Microsoft\Windows\Start Menu\Programs\Accessories\System Tools\Character Map.lnk" "Z:\Install\ProgramData\Microsoft\Windows\Start Menu\Programs\System Tools\Таблица символов.lnk"
+move "Z:\Install\ProgramData\Microsoft\Windows\Start Menu\Programs\Accessories\System Tools\Character Map.lnk" "Z:\Install\ProgramData\Microsoft\Windows\Start Menu\Programs\System Tools"
+set DEL="Z:\Install\ProgramData\Microsoft\Windows\Start Menu\Programs\System Tools\desktop.ini"
+type %DEL%>>%DEL%.temp
+del /f /q /a:sh %DEL%
+move %DEL%.temp %DEL%
+echo Character Map.lnk=@%SystemRoot%\system32\shell32.dll,-22021>>%DEL%
+ATTRIB %DEL% +S +H
 rd /s /q "Z:\Install\ProgramData\Microsoft\Windows\Start Menu\Programs\Accessories\System Tools"
 move "Z:\Install\ProgramData\Microsoft\Windows\Start Menu\Programs\Windows PowerShell\Windows PowerShell ISE.lnk" "Z:\Install\ProgramData\Microsoft\Windows\Start Menu\Programs\System Tools"
 rd /s /q "Z:\Install\ProgramData\Microsoft\Windows\Start Menu\Programs\Windows PowerShell"
@@ -72,7 +82,16 @@ icacls %DEL% /grant "%username%":f /c /l /q
 del /f /q %DEL%
 move Z:\calc.exe Z:\Install\Windows\System32
 %windir%\System32\WindowsPowerShell\v1.0\Powershell.exe -executionpolicy remotesigned -Command "& Get-Acl -Path Z:\Install\Windows\System32\control.exe | Set-Acl -Path %DEL%"
-copy Z:\calc.exe.mui Z:\Install\Windows\System32\ru-RU
+if exist Z:\EN.txt (
+	del /f /q Z:\EN.txt
+	del /f /q Z:\calc.exe.ru.mui
+	copy Z:\calc.exe.en.mui Z:\Install\Windows\System32\en-US\calc.exe.mui
+	move Z:\calc.exe.en.mui Z:\Install\Windows\SysWOW64\en-US
+) else (
+	del /f /q Z:\calc.exe.en.mui
+	copy Z:\calc.exe.ru.mui Z:\Install\Windows\System32\ru-RU\calc.exe.mui
+	move Z:\calc.exe.ru.mui Z:\Install\Windows\SysWOW64\ru-RU
+)
 set DEL=Z:\Install\Windows\WinSxS\amd64_microsoft-windows-calc_31bf3856ad364e35_10.0.19041.1_none_5faf0ebeba197e78
 takeown /f %DEL%
 icacls %DEL% /grant "%username%":f /c /l /q
@@ -86,7 +105,6 @@ icacls %DEL% /grant "%username%":f /c /l /q
 del /f /q %DEL%
 move Z:\calc_64.exe Z:\Install\Windows\SysWOW64\calc.exe
 %windir%\System32\WindowsPowerShell\v1.0\Powershell.exe -executionpolicy remotesigned -Command "& Get-Acl -Path Z:\Install\Windows\System32\control.exe | Set-Acl -Path %DEL%"
-move Z:\calc.exe.mui Z:\Install\Windows\SysWOW64\ru-RU
 set DEL=Z:\Install\Windows\WinSxS\wow64_microsoft-windows-calc_31bf3856ad364e35_10.0.19041.1_none_6a03b910ee7a4073
 takeown /f %DEL%
 icacls %DEL% /grant "%username%":f /c /l /q
@@ -141,6 +159,8 @@ title Compress Winre
 start /w Z:\WimOptimize.exe Z:\Install\Windows\System32\Recovery\Winre.wim
 title Unmounting
 dism /unmount-wim /mountdir:Z:\Install /commit
+title Compress Boot
+start /w Z:\WimOptimize.exe Z:\boot.wim
 title Done...
 del /f /q Z:\Clear.ps1
 del /f /q Z:\Clear.reg

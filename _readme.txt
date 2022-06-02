@@ -1,5 +1,4 @@
 dism /export-image /sourceimagefile:Z:\install.wim /sourceindex:1 /destinationimagefile:Z:\install.esd /compress:recovery
-Z:\WimOptimize.exe Z:\boot.wim
 
 Информационные команды:
 dism /get-imageinfo /imagefile:Z:\install.wim
@@ -59,6 +58,8 @@ dism /image:Z:\Install /get-features > Z:\list3.txt
 		Разрешить использование Кортаны. (Откл.)
 		Запретить поиск в Интернете. (Вкл.)
 		Не выполнять поиск в Интернете. (Вкл.)
+	Новости и интересы:
+		Включить новости и интересы. (Откл.)
 	Обмен сообщениями:
 		Разрешить синхронизацию. (Откл.)
 	Оптимизация доставки:

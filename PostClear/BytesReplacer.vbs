@@ -11,16 +11,22 @@ stream.Charset = "Windows-1252"
 stream.LoadFromFile WScript.Arguments(0)
 data = stream.ReadText
 stream.Close
+If (CreateObject("Scripting.FileSystemObject").FileExists(CreateObject("WScript.Shell").ExpandEnvironmentStrings("%windir%\ru-RU\explorer.exe.mui"))) Then
+	lang = "RU"
+Else
+	lang = "EN"
+End If
 If (WScript.Arguments(2) = 1 And InStr(data, find1) > 0) Or (WScript.Arguments(2) = 2 And InStr(data, find2) > 0) Or (WScript.Arguments(2) = 3 And InStr(data, find3) > 0) Then
 	If WScript.Arguments(2) = 1 Then
 		data = Replace(data, find1, ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144)&ChrW(144))
-		WScript.Echo "Операция замены выполнена."
 	ElseIf WScript.Arguments(2) = 2 Then
 		data = Replace(data, find2, Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32)&Chr(0)&Chr(32))
-		WScript.Echo "Операция замены выполнена."
 	ElseIf WScript.Arguments(2) = 3 Then
-		data = Replace(data, find3, Chr(0)&Chr(0)&Chr(0)&Chr(0)&Chr(0)&Chr(82)&Chr(0)&Chr(85)&Chr(0)&Chr(0)&Chr(0)&Chr(0)&Chr(0))
-		WScript.Echo "Операция замены выполнена."
+		if lang = "RU" Then
+			data = Replace(data, find3, Chr(0)&Chr(0)&Chr(0)&Chr(0)&Chr(0)&Chr(82)&Chr(0)&Chr(85)&Chr(0)&Chr(0)&Chr(0)&Chr(0)&Chr(0))
+		Else
+			data = Replace(data, find3, Chr(0)&Chr(0)&Chr(0)&Chr(0)&Chr(0)&Chr(85)&Chr(0)&Chr(83)&Chr(0)&Chr(0)&Chr(0)&Chr(0)&Chr(0))
+		End If
 	End If
 	stream.Open
 	stream.Type = 2
@@ -28,7 +34,21 @@ If (WScript.Arguments(2) = 1 And InStr(data, find1) > 0) Or (WScript.Arguments(2
 	stream.WriteText data
 	stream.SaveToFile WScript.Arguments(1), 2
 	stream.Close
+	result = "Done"
 Else
-	WScript.Echo "Ошибка операции."
+	result = "Error"
+End If
+if lang = "RU" Then
+	if result = "Done" Then
+		WScript.Echo "Операция замены выполнена."
+	Else
+		WScript.Echo "Ошибка операции."
+	End If
+Else
+	if result = "Done" Then
+		WScript.Echo "Replace operation success."
+	Else
+		WScript.Echo "Operation error."
+	End If
 End If
 Set stream = Nothing
