@@ -157,6 +157,7 @@ for /f "tokens=*" %%i in ('dir Z:\Install\Windows\WinSxS\Backup /b /a:-d') do (
 )
 title Compress Winre
 start /w Z:\WimOptimize.exe Z:\Install\Windows\System32\Recovery\Winre.wim
+TIMEOUT /T 1 /NOBREAK >nul
 title Unmounting
 dism /unmount-wim /mountdir:Z:\Install /commit
 title Compress Boot

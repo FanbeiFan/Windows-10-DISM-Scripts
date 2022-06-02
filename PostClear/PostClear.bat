@@ -210,7 +210,6 @@ if exist %windir%\ru-RU\explorer.exe.mui (
 	set appxon=+ Enable AppX support
 	set appxoff=+ Disable AppX support
 	set oldcalc=Calculator
-	reg add "HKEY_CURRENT_USER\SOFTWARE\IvoSoft\ClassicShell\Settings" /v Language /t REG_SZ /d "en-US"
 )
 cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\%rescom%.lnk" "%programdata%\PostClear\Shortcuts\Compatibility.bat"
 cscript %programdata%\PostClear\Shortcut.vbs "%programdata%\Microsoft\Windows\Start Menu\Programs\System Tools\%resmix%.lnk" "%programdata%\PostClear\Shortcuts\MixerReset.bat"
