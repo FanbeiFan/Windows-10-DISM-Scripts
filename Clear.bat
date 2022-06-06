@@ -82,13 +82,21 @@ icacls %DEL% /grant "%username%":f /c /l /q
 del /f /q %DEL%
 move Z:\calc.exe Z:\Install\Windows\System32
 %windir%\System32\WindowsPowerShell\v1.0\Powershell.exe -executionpolicy remotesigned -Command "& Get-Acl -Path Z:\Install\Windows\System32\control.exe | Set-Acl -Path %DEL%"
-if exist Z:\EN.txt (
-	del /f /q Z:\EN.txt
+if exist Z:\Install\Windows\en-US\explorer.exe.mui (
+	del /f /q Z:\calc.exe.cn.mui
 	del /f /q Z:\calc.exe.ru.mui
 	copy Z:\calc.exe.en.mui Z:\Install\Windows\System32\en-US\calc.exe.mui
 	move Z:\calc.exe.en.mui Z:\Install\Windows\SysWOW64\en-US
-) else (
+)
+if exist Z:\Install\Windows\zh-CN\explorer.exe.mui (
 	del /f /q Z:\calc.exe.en.mui
+	del /f /q Z:\calc.exe.ru.mui
+	copy Z:\calc.exe.cn.mui Z:\Install\Windows\System32\zh-CN\calc.exe.mui
+	move Z:\calc.exe.cn.mui Z:\Install\Windows\SysWOW64\zh-CN
+)
+if exist Z:\Install\Windows\ru-RU\explorer.exe.mui (
+	del /f /q Z:\calc.exe.en.mui
+	del /f /q Z:\calc.exe.cn.mui
 	copy Z:\calc.exe.ru.mui Z:\Install\Windows\System32\ru-RU\calc.exe.mui
 	move Z:\calc.exe.ru.mui Z:\Install\Windows\SysWOW64\ru-RU
 )
