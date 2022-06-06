@@ -83,6 +83,7 @@ del /f /q %DEL%
 move Z:\calc.exe Z:\Install\Windows\System32
 %windir%\System32\WindowsPowerShell\v1.0\Powershell.exe -executionpolicy remotesigned -Command "& Get-Acl -Path Z:\Install\Windows\System32\control.exe | Set-Acl -Path %DEL%"
 if exist Z:\Install\Windows\en-US\explorer.exe.mui (
+	del /f /q Z:\EN.txt
 	del /f /q Z:\calc.exe.cn.mui
 	del /f /q Z:\calc.exe.ru.mui
 	copy Z:\calc.exe.en.mui Z:\Install\Windows\System32\en-US\calc.exe.mui
