@@ -1,5 +1,5 @@
 # Windows-10-DISM-Scripts
-Support languages: EN-US\ZH-CN\RU-RU
+Support languages\支持语言\Поддерживаемые языки: EN-US\ZH-CN\RU-RU
 
 Image optimization by removing pre-installed junk packages, disabling update tasks, disabling Defender and other minor changes. All this is done by standard means (DISM commands, CMD queries and changing registry keys).
 
